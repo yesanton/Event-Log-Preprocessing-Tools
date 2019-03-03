@@ -8,18 +8,18 @@ Written in python 3.
 
 Examle:
 
-'''shell
+```shell
 python3 sort_by_timestamp_first_event_in_the_case.py path/to/log caseIdNumber timestampIdNumber
-'''
+```
 
 You can always run --help function to check the parameters' list.
 
-'''shell
+```shell
 python3 sort_by_timestamp_first_event_in_the_case.py --help
-'''
+```
 
 Out:
-
+```shell
 usage: sort_by_timestamp_first_event_in_the_case.py [-h] [--outPath OUTPATH]
                                                     [--delim DELIM]
                                                     [--delimOut DELIMOUT]
@@ -39,4 +39,5 @@ optional arguments:
                        strong)
   --delim DELIM        delimiter used (if not standard: ',')
   --delimOut DELIMOUT  delimiter used to output (if not standard: ',')
+```
   
