@@ -7,9 +7,9 @@ from datetime import datetime
 
 # https://docs.python.org/3/howto/argparse.html
 parser = argparse.ArgumentParser()
-parser.add_argument("inPath", help="path to event log here (csv)")
-parser.add_argument("caseInd", help="index of the case column in the csv file (index starts from 0)", type=int)
-parser.add_argument("timeInd", help="index of the timestamp in the csv file (index starts from 0)", type=int)
+parser.add_argument("inPath", help="path Rto event log here (csv)")
+parser.add_argument("--caseInd", help="index of the case column in the csv file (index starts from 0)", type=int)
+parser.add_argument("--timeInd", help="index of the timestamp in the csv file (index starts from 0)", type=int)
 parser.add_argument("--outPath", help="output file name (in case not provided, saved in the same folder with appended name with \'timestamp_sorted\' strong)")
 parser.add_argument("--delim", help="delimiter used (if not standard: \',\')")
 parser.add_argument("--delimOut", help="delimiter used to output (if not standard: \',\')")
@@ -20,6 +20,9 @@ print(args.inPath)
 event_log_in = Path(args.inPath)
 opened_event_log = open(event_log_in, 'r')
 
+
+
+
 if args.delim:
     csv_reader = csv.reader(opened_event_log, delimiter=args.delim, quotechar='|')
 else:
@@ -27,16 +30,33 @@ else:
 
 header = next(csv_reader, None)
 
+case_id = None
+timestamp_id = None
+if not args.caseInd:
+    print ("The case ID and timestamp ID are not inputted")
+    print ("Choose *case ID* and *timestamp ID* number from next lines:")
+    for i in range(len(header)):
+        print (str(i) + "  " + header[i])
+
+
+    case_id = int(input("Case ID is: "))
+    timestamp_id = int(input("Timestamp ID is: "))
+
+else:
+    case_id = args.caseInd
+    timestamp_id = args.timeInd
+
 log = []
 trace = []
 current_case = None
 for row in csv_reader:
-    if current_case != row[args.caseInd]:
+    #print (row)
+    if current_case != row[case_id]:
         # here we finished reading one trace
         if not trace == []:
             log.append(trace)
         trace = [row]
-        current_case = row[args.caseInd]
+        current_case = row[case_id]
     else:
         trace.append(row)
 
@@ -51,7 +71,7 @@ def string_to_timeval(str_time):
     return time.mktime(t.timetuple())
 
 
-log = sorted(log, key=lambda trace: string_to_timeval(trace[0][args.timeInd]))
+log = sorted(log, key=lambda trace: string_to_timeval(trace[0][timestamp_id]))
 
 if args.outPath:
     out_log_path = args.outPath
